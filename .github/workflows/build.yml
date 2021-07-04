@@ -1,13 +1,6 @@
 name: Build & Test Node.js
 
-on:
-  push:
-    branches:
-      - master
-
-  pull_request:
-    types: [ synchronize, review_requested ]
-
+on: push
 
 jobs:
   build:
@@ -44,14 +37,4 @@ jobs:
         with:
           commit_message: ":package: Updated compiled codes"
           file_pattern: "./build/" # Only commit contents of dist folder / Similar to git add command
-
-      - name: Deploy via ftp
-        uses: sebastianpopp/ftp-action@releases/v2
-        with:
-          host: ${{ secrets.FTP_HOSTNAME }}
-          user: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          localDir: "build"
-          remoteDir: "frontend"
-          options: "--delete --asci"
 
