@@ -1,12 +1,12 @@
 name: Build & Test Node.js
 
-on: push
-#  push:
-#    branches:
-#      - master
-#
-#  pull_request:
-#    types: [synchronize, review_requested]
+on:
+  push:
+    branches:
+      - master
+
+  pull_request:
+    types: [synchronize, review_requested]
 
 
 jobs:
@@ -38,7 +38,7 @@ jobs:
       - name: Build Project
         run: npm run build
 
-          # Commit the compiled codes in the cloud back into the repo
+      # Commit the compiled codes in the cloud back into the repo
       - name: Auto-commit compiled codes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
