@@ -24,7 +24,11 @@ export const Login = (): any => {
     }
 
     const googleSignIn = () => {
-        auth.signInWithPopup(provider).catch(alert)
+        auth.signInWithPopup(provider)
+            .then(() => {
+                history.push('/dashboard')
+            })
+            .catch(alert)
     }
 
     return (
