@@ -43,4 +43,3 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: ":package: Updated compiled codes"
-          file_pattern: "build/." # Only commit contents of dist folder / Similar to git add command
