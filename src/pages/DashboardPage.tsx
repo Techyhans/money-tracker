@@ -1,9 +1,8 @@
-import {Dashboard} from "../components/Dashboard";
+import React from 'react'
+import { Dashboard } from '../components/Dashboard'
 
-export const DashboardPage = () => {
-    return (
-        <div>
-            <Dashboard />
-        </div>
-    )
-}
+export const DashboardPage = (): any => (
+    <div>
+        <Dashboard />
+    </div>
+)

@@ -1,30 +1,44 @@
-import { Form, Input, Button, Checkbox } from 'antd';
-import { useHistory } from "react-router-dom";
+import React from 'react'
 
-export const Login = () => {
-    const history = useHistory();
+import { Form, Input, Button, Checkbox } from 'antd'
+import { useHistory } from 'react-router-dom'
 
-    const onFinish = (values: any) => {
-        console.log('Success:', values);
-        history.push("/dashboard");
-    };
+import { auth, provider } from '../auth/FirebaseAuth'
+import firebase from 'firebase'
+
+export const Login = (): any => {
+    const history = useHistory()
+
+    const emailSignIn = (values: any) => {
+        firebase
+            .auth()
+            .signInWithEmailAndPassword(values.email, values.password)
+            .then(() => {
+                history.push('/dashboard')
+            })
+            .catch(alert)
+    }
 
     const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
-    };
+        console.log(errorInfo)
+    }
+
+    const googleSignIn = () => {
+        auth.signInWithPopup(provider).catch(alert)
+    }
 
     return (
         <>
             <Form
                 name="basic"
                 initialValues={{ remember: true }}
-                onFinish={onFinish}
+                onFinish={emailSignIn}
                 onFinishFailed={onFinishFailed}
             >
                 <Form.Item
-                    label="Username"
-                    name="username"
-                    rules={[{ required: true, message: 'Please input your username!' }]}
+                    label="Email"
+                    name="email"
+                    rules={[{ required: true, message: 'Please input your email!' }]}
                 >
                     <Input />
                 </Form.Item>
@@ -43,7 +57,19 @@ export const Login = () => {
 
                 <Form.Item>
                     <Button type="primary" htmlType="submit">
-                        Submit
+                        Email
+                    </Button>
+                    <Button type="primary" htmlType="submit" onClick={googleSignIn}>
+                        Google
+                    </Button>
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        onClick={() => {
+                            history.push('/signup')
+                        }}
+                    >
+                        Sign Up
                     </Button>
                 </Form.Item>
             </Form>
