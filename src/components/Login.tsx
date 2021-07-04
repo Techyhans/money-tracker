@@ -1,11 +1,13 @@
 import { Form, Input, Button, Checkbox } from 'antd';
 import { useHistory } from "react-router-dom";
+import {LoginProps} from "../shared/model";
 
 export const Login = () => {
     const history = useHistory();
 
     const onFinish = (values: any) => {
         console.log('Success:', values);
+
         history.push("/dashboard");
     };
 
