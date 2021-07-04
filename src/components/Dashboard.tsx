@@ -12,24 +12,15 @@ import {
     Switch,
 } from 'antd';
 
-type SizeType = Parameters<typeof Form>[0]['size'];
-
 export const Dashboard = () => {
-    const [componentSize, setComponentSize] = useState<SizeType | 'default'>('large');
-
-    const onFormLayoutChange = ({ size }: { size: SizeType }) => {
-        setComponentSize(size);
-    };
-
     return (
         <>
             <Form
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 14 }}
                 layout="horizontal"
-                initialValues={{ size: componentSize }}
-                onValuesChange={onFormLayoutChange}
-                size={componentSize as SizeType}
+                initialValues={{ size: "large" }}
+                size={"large"}
             >
                 <Form.Item label="Form Size" name="size">
                     <Radio.Group>
