@@ -7,7 +7,7 @@ export const Login = () => {
 
     const onFinish = (values: any) => {
         console.log('Success:', values);
-
+        console.log("TEST")
         history.push("/dashboard");
     };
 
