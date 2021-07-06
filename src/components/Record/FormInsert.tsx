@@ -2,7 +2,6 @@ import {
     Form,
     Input,
     Button,
-    Radio,
     Select,
     Cascader,
     DatePicker,
@@ -10,8 +9,27 @@ import {
     TreeSelect,
     Switch,
 } from 'antd'
+import { database } from '../../auth/FirebaseAuth'
 
 export const FormInsert = () => {
+    const onSubmit = (values: any) => {
+        const ref = database.ref()
+        const uniqueKey = ref.child('2').push().key
+        const usersRef = ref.child(uniqueKey!)
+        usersRef
+            .set({
+                alanisawesome: {
+                    date_of_birth: 'June 23, 1912',
+                    full_name: 'Alan Turing',
+                },
+                gracehop: {
+                    date_of_birth: 'December 9, 1906',
+                    full_name: 'Grace Hopper',
+                },
+            })
+            .then((r) => console.log(r))
+    }
+
     return (
         <>
             <Form
@@ -19,7 +37,7 @@ export const FormInsert = () => {
                 layout={'horizontal'}
                 initialValues={{ size: 'large' }}
                 size={'large'}
-                onFinish={() => null}
+                onFinish={onSubmit}
                 onFinishFailed={() => null}
             >
                 <Form.Item label="Name">
@@ -67,7 +85,7 @@ export const FormInsert = () => {
                     <Switch />
                 </Form.Item>
                 <Form.Item label="Button">
-                    <Button>Button</Button>
+                    <Button htmlType="submit">Button</Button>
                 </Form.Item>
             </Form>
         </>

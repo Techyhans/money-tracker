@@ -1,20 +1,12 @@
 import React, { useState } from 'react'
 import { auth } from '../auth/FirebaseAuth'
 import { useNavigate } from 'react-router-dom'
-import { Modal, Button, Result } from 'antd'
+import { Modal, Result } from 'antd'
 
 export const LogOut = (): any => {
     const navigate = useNavigate()
 
     const [isModalVisible, setIsModalVisible] = useState(true)
-
-    const showModal = () => {
-        setIsModalVisible(true)
-    }
-
-    const handleOk = () => {
-        setIsModalVisible(false)
-    }
 
     const handleCancel = () => {
         setIsModalVisible(false)
@@ -25,8 +17,6 @@ export const LogOut = (): any => {
             navigate('/login')
         })
     }
-
-    const userEmail = auth.currentUser!.email
 
     return (
         <>

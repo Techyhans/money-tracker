@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-
+import { useAuthState } from 'react-firebase-hooks/auth'
 import { Form, Input, Button, Checkbox } from 'antd'
 import { useNavigate } from 'react-router-dom'
 
@@ -11,6 +11,8 @@ export const Login = (): any => {
     const [loading, setLoading] = useState(false)
     const [isError, setIsError] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
+
+    const [user] = useAuthState(auth)
 
     const navigate = useNavigate()
 
