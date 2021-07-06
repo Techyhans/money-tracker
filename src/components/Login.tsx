@@ -12,8 +12,6 @@ export const Login = (): any => {
     const [isError, setIsError] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
 
-    const [user] = useAuthState(auth)
-
     const navigate = useNavigate()
 
     const emailSignIn = (values: any) => {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Routes, Route, HashRouter } from 'react-router-dom'
+import { Routes, Route, HashRouter, Navigate } from 'react-router-dom'
 
 import { LoginPage } from '../pages/LoginPage'
 import { SignUp } from '../components/SignUp'
@@ -17,7 +17,8 @@ export const Routing = (): any => (
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/insert" element={<FormInsert />} />
             </Route>
-            <Route path="**" element={<ServerErrorPage />} />
+            <Route path="/" element={<LoginPage />} />
+            <Route path="*" element={<ServerErrorPage />} />
         </Routes>
     </HashRouter>
 )
