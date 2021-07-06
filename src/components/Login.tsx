@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import { Form, Input, Button, Checkbox } from 'antd'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { auth, provider } from '../auth/FirebaseAuth'
 import firebase from 'firebase'
@@ -12,7 +12,7 @@ export const Login = (): any => {
     const [isError, setIsError] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
 
-    const history = useHistory()
+    const navigate = useNavigate()
 
     const emailSignIn = (values: any) => {
         setLoading(true)
@@ -20,7 +20,7 @@ export const Login = (): any => {
             .auth()
             .signInWithEmailAndPassword(values.email, values.password)
             .then(() => {
-                history.push('/dashboard')
+                navigate('/app/dashboard')
             })
             .catch((e) => {
                 setLoading(false)
@@ -37,13 +37,13 @@ export const Login = (): any => {
         setLoading(true)
         auth.signInWithPopup(provider)
             .then(() => {
-                history.push('/dashboard')
+                navigate('/app/dashboard')
             })
             .catch(alert)
     }
 
     const onSignUp = () => {
-        history.push('/signup')
+        navigate('/signup')
     }
 
     const onRemoveError = () => {

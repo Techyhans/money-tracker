@@ -1,10 +1,10 @@
 import React from 'react'
 
 import 'antd/dist/antd.css'
-import { Routes } from './routes/Routes'
+import { Routing } from './routes/Routing'
 
 export const App = (): any => (
     <>
-        <Routes />
+        <Routing />
     </>
 )

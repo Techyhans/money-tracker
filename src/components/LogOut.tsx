@@ -1,26 +1,38 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { auth } from '../auth/FirebaseAuth'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { Modal, Button, Result } from 'antd'
 
 export const LogOut = (): any => {
-    const history = useHistory()
+    const navigate = useNavigate()
+
+    const [isModalVisible, setIsModalVisible] = useState(true)
+
+    const showModal = () => {
+        setIsModalVisible(true)
+    }
+
+    const handleOk = () => {
+        setIsModalVisible(false)
+    }
+
+    const handleCancel = () => {
+        setIsModalVisible(false)
+    }
 
     const logout = () => {
-        auth.signOut()
-        history.push('/login')
+        auth.signOut().then((result) => {
+            navigate('/login')
+        })
     }
 
     const userEmail = auth.currentUser!.email
 
     return (
         <>
-            <div>
-                Welcome
-                {userEmail}
-                <button style={{ marginLeft: '20px' }} onClick={logout}>
-                    Logout
-                </button>
-            </div>
+            <Modal title="Warning" visible={isModalVisible} onOk={logout} onCancel={handleCancel}>
+                <Result status="warning" title="Are you sure want to log out?" />
+            </Modal>
         </>
     )
 }
