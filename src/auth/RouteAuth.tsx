@@ -8,7 +8,7 @@ type RouteProps = {
     comp: ReactElement
 }
 
-export const RouteAuth = ({ path, comp }: RouteProps) => {
+export const RouteAuth = ({ path, comp }: RouteProps): ReactElement => {
     const [user] = useAuthState(auth)
     return user ? <Route path={path} element={comp} /> : <Navigate to={'/login'} />
 }

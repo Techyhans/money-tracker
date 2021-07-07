@@ -7,46 +7,46 @@ import firebase from 'firebase'
 import { Spinner } from './Spinner'
 import { LoginProps } from '../shared/model'
 
-export const Login = () => {
+export const Login = (): JSX.Element => {
     const [loading, setLoading] = useState<boolean>(false)
     const [isError, setIsError] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string>('')
 
     const navigate = useNavigate()
 
-    const emailSignIn = (values: LoginProps) => {
+    const emailSignIn = (values: LoginProps): void => {
         setLoading(true)
         firebase
             .auth()
             .signInWithEmailAndPassword(values.email, values.password)
-            .then(() => {
+            .then((): void => {
                 navigate('/app/dashboard')
             })
-            .catch((e) => {
+            .catch((e): void => {
                 setLoading(false)
                 setIsError(true)
                 setErrorMessage(e.message)
             })
     }
 
-    const onFinishFailed = (errorInfo: any) => {
+    const onFinishFailed = (errorInfo: any): void => {
         console.log(errorInfo)
     }
 
-    const googleSignIn = () => {
+    const googleSignIn = (): void => {
         setLoading(true)
         auth.signInWithPopup(provider)
-            .then(() => {
+            .then((): void => {
                 navigate('/app/dashboard')
             })
             .catch(alert)
     }
 
-    const onSignUp = () => {
+    const onSignUp = (): void => {
         navigate('/signup')
     }
 
-    const onRemoveError = () => {
+    const onRemoveError = (): void => {
         setIsError(false)
     }
 
