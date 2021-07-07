@@ -1,6 +1,6 @@
 import { database } from '../auth/FirebaseAuth'
 import React, { useState, useEffect } from 'react'
-import { Table, Divider } from 'antd'
+import { Table, Divider, Result, Button, Modal } from 'antd'
 
 type Details = {
     amount: number
@@ -15,14 +15,20 @@ interface DataProps {
     foodTotal: number
     orderDate: string
     payBy: string
+    key: string
 }
 
 interface TableProp {
+    uniqueKey: string
     orderDate: string
     payBy: string
 }
 
 const tableColumns = [
+    {
+        title: 'Key',
+        dataIndex: 'uniqueKey',
+    },
     {
         title: 'Order Date',
         dataIndex: 'orderDate',
@@ -34,31 +40,113 @@ const tableColumns = [
 ]
 
 export const Dashboard = (): JSX.Element => {
+    const [dataFromServer, setDataFromServer] = useState<DataProps[]>([])
     const [tableData, setTableData] = useState<TableProp[]>([])
+    const [selectedKey, setSelectedKey] = useState<string>('')
+
+    const [isModalVisible, setIsModalVisible] = useState(false)
+
+    const showModal = (): void => {
+        setIsModalVisible(true)
+    }
+
+    const handleOk = (): void => {
+        setIsModalVisible(false)
+    }
+
+    const handleCancel = (): void => {
+        setIsModalVisible(false)
+    }
 
     useEffect((): void => {
-        const dataFromServer: DataProps[] = []
-        database.ref().on('value', (snapshot): void => {
-            snapshot.forEach((item): void => {
-                dataFromServer.push(item.val())
+        database
+            .ref()
+            .child('orders')
+            .on('value', (snapshot): void => {
+                snapshot.forEach((item): void => {
+                    console.log(item.val())
+                    dataFromServer.push(item.val())
+                })
+                const tempTableData: TableProp[] = []
+                dataFromServer.forEach((item): void => {
+                    const js = {
+                        orderDate: item.orderDate,
+                        payBy: item.payBy,
+                        uniqueKey: item.key,
+                    }
+                    tempTableData.push(js)
+                })
+                setTableData(tempTableData)
             })
-            const tempTableData: TableProp[] = []
-            dataFromServer.forEach((item): void => {
-                const js = {
-                    orderDate: item.orderDate,
-                    payBy: item.payBy,
-                }
-                tempTableData.push(js)
-            })
-            setTableData(tempTableData)
-        })
     }, [])
+
+    const onRowClick = (record: any): any => {
+        return {
+            onClick: (): void => {
+                const selectedRow = dataFromServer.find(
+                    (item): boolean => item.orderDate === record.orderDate
+                )
+                console.log('SELECTED', selectedRow)
+                setSelectedKey(selectedRow!.key)
+                showModal()
+            },
+        }
+    }
+
+    const onUpdateData = (): void => {
+        database
+            .ref()
+            .child('orders')
+            .child(selectedKey)
+            .update({
+                cleared: 1,
+            })
+            .then((r): void => {
+                // handleCancel()
+            })
+    }
+
+    const onDeleteData = (): void => {
+        database
+            .ref()
+            .child('orders')
+            .child(selectedKey)
+            .remove()
+            .then((r): void => {
+                setTableData(
+                    tableData.filter((item: TableProp): any => item.uniqueKey !== selectedKey)
+                )
+                // setIsModalVisible(false)
+            })
+    }
 
     return (
         <>
+            <Modal
+                title="Basic Modal"
+                visible={isModalVisible}
+                onCancel={handleCancel}
+                footer={[
+                    <Button key="back" onClick={handleCancel}>
+                        Close
+                    </Button>,
+                    <Button key="submit" type="primary" loading={false} onClick={onUpdateData}>
+                        Mask as Completed
+                    </Button>,
+                    <Button key="submit" type="primary" loading={false} onClick={onDeleteData}>
+                        Delete
+                    </Button>,
+                ]}
+            >
+                <Result
+                    status="warning"
+                    title="Completed or Delete?"
+                    subTitle="Complete = OK | Delete = Cancel"
+                />
+            </Modal>
             <h1>dashboard</h1>
             <Divider />
-            <Table columns={tableColumns} dataSource={tableData} />
+            <Table columns={tableColumns} dataSource={tableData} onRow={onRowClick} />
         </>
     )
 }

@@ -8,12 +8,12 @@ export const LogOut = (): any => {
 
     const [isModalVisible, setIsModalVisible] = useState(true)
 
-    const handleCancel = () => {
+    const handleCancel = (): void => {
         setIsModalVisible(false)
     }
 
-    const logout = () => {
-        auth.signOut().then((result) => {
+    const logout = (): void => {
+        auth.signOut().then((result): any => {
             navigate('/login')
         })
     }
