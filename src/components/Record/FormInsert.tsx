@@ -10,10 +10,9 @@ import {
     Switch,
 } from 'antd'
 import { database } from '../../auth/FirebaseAuth'
-import { JSXElementConstructor } from 'react'
 
 export const FormInsert = (): JSX.Element => {
-    const onSubmit = (values: any): void => {
+    const onSubmit = (): void => {
         const ref = database.ref()
         const uniqueKey = ref.child('2').push().key
         const usersRef = ref.child(uniqueKey!)
@@ -28,7 +27,7 @@ export const FormInsert = (): JSX.Element => {
                     full_name: 'Grace Hopper',
                 },
             })
-            .then((r) => console.log(r))
+            .then((r): void => console.log(r))
     }
 
     return (
@@ -39,7 +38,6 @@ export const FormInsert = (): JSX.Element => {
                 initialValues={{ size: 'large' }}
                 size={'large'}
                 onFinish={onSubmit}
-                onFinishFailed={() => null}
             >
                 <Form.Item label="Name">
                     <Input />
