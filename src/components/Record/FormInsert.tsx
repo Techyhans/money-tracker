@@ -1,37 +1,82 @@
-import {
-    Form,
-    Input,
-    Button,
-    Select,
-    Cascader,
-    DatePicker,
-    InputNumber,
-    TreeSelect,
-    Switch,
-} from 'antd'
+import { Form, Input, Button, Select, DatePicker, Table, Divider, Alert } from 'antd'
+import React, { ChangeEvent, useState } from 'react'
 import { database } from '../../auth/FirebaseAuth'
+import moment from 'moment-timezone'
+
+const columns = [
+    {
+        title: 'Name',
+        dataIndex: 'name',
+    },
+    {
+        title: 'Amount',
+        dataIndex: 'amount',
+    },
+]
+
+interface DataType {
+    key: React.Key
+    name: string
+    amount: number
+}
 
 export const FormInsert = (): JSX.Element => {
-    const onSubmit = (): void => {
+    const [nameToAdd, setNameToAdd] = useState<string>('')
+    const [amountToAdd, setAmountToAdd] = useState<number>(0)
+    const [data, setData] = useState<DataType[]>([])
+    const [showAlert, setShowAlert] = useState<boolean>(false)
+
+    const onSubmit = (values: any): void => {
+        // Form Data To Submit
+        const dataToSubmit = {
+            payBy: values.payBy,
+            foodTotal: +values.foodTotal,
+            deliveryTotal: +values.deliveryTotal,
+            discountTotal: +values.discountTotal,
+            orderDate: moment(values.orderDate)
+                .tz('Asia/Kuala_Lumpur')
+                .format('YYYY-MM-DD HH:mm:ss'),
+            taxTotal: +values.taxTotal,
+            cleared: 0,
+            details: {},
+        }
+        dataToSubmit.details = data
+
+        // Submit to firebase
         const ref = database.ref()
-        const uniqueKey = ref.child('2').push().key
+        const uniqueKey = ref.child('orders').push().key
         const usersRef = ref.child(uniqueKey!)
-        usersRef
-            .set({
-                alanisawesome: {
-                    date_of_birth: 'June 23, 1912',
-                    full_name: 'Alan Turing',
-                },
-                gracehop: {
-                    date_of_birth: 'December 9, 1906',
-                    full_name: 'Grace Hopper',
-                },
-            })
-            .then((r): void => console.log(r))
+        usersRef.set(dataToSubmit).then((): void => {
+            setShowAlert(true)
+        })
+    }
+
+    const onRowClick = (record: any): any => {
+        return {
+            onClick: (): void => {
+                console.log(record)
+                setData(data.filter((item: DataType): any => item.key !== record.key))
+            },
+        }
+    }
+
+    const onRowAdd = (): void => {
+        setData((): DataType[] => [
+            ...data,
+            {
+                key: data.length + 1,
+                name: nameToAdd,
+                amount: amountToAdd,
+            },
+        ])
     }
 
     return (
         <>
+            {showAlert && (
+                <Alert message="Data Saved Successfully" type="success" showIcon={true} />
+            )}
+            <Table onRow={onRowClick} columns={columns} dataSource={data} />
             <Form
                 labelCol={{ span: 2 }}
                 layout={'horizontal'}
@@ -39,52 +84,48 @@ export const FormInsert = (): JSX.Element => {
                 size={'large'}
                 onFinish={onSubmit}
             >
-                <Form.Item label="Name">
-                    <Input />
-                </Form.Item>
-                <Form.Item label="Select">
+                <Form.Item label="Pay By" name="payBy">
                     <Select>
-                        <Select.Option value="demo">Demo</Select.Option>
+                        <Select.Option value="hansheng">Han Sheng</Select.Option>
+                        <Select.Option value="annabelle">Annabelle</Select.Option>
+                        <Select.Option value="elizabeth">Elizabeth</Select.Option>
                     </Select>
                 </Form.Item>
-                <Form.Item label="TreeSelect">
-                    <TreeSelect
-                        treeData={[
-                            {
-                                title: 'Light',
-                                value: 'light',
-                                children: [{ title: 'Bamboo', value: 'bamboo' }],
-                            },
-                        ]}
-                    />
+                <Form.Item label="Food Total" name="foodTotal">
+                    <Input />
                 </Form.Item>
-                <Form.Item label="Cascader">
-                    <Cascader
-                        options={[
-                            {
-                                value: 'zhejiang',
-                                label: 'Zhejiang',
-                                children: [
-                                    {
-                                        value: 'hangzhou',
-                                        label: 'Hangzhou',
-                                    },
-                                ],
-                            },
-                        ]}
-                    />
+                <Form.Item label="Delivery Total" name="deliveryTotal">
+                    <Input />
                 </Form.Item>
-                <Form.Item label="DatePicker">
+                <Form.Item label="Discount" name="discountTotal">
+                    <Input />
+                </Form.Item>
+                <Form.Item label="Tax" name="taxTotal">
+                    <Input />
+                </Form.Item>
+                <Form.Item label="Date" name="orderDate">
                     <DatePicker />
                 </Form.Item>
-                <Form.Item label="InputNumber">
-                    <InputNumber />
+                <Divider />
+                <Form.Item label="Name">
+                    <Select onSelect={(e: string): void => setNameToAdd(e)}>
+                        <Select.Option value="hansheng">Han Sheng</Select.Option>
+                        <Select.Option value="annabelle">Annabelle</Select.Option>
+                        <Select.Option value="elizabeth">Elizabeth</Select.Option>
+                    </Select>
                 </Form.Item>
-                <Form.Item label="Switch">
-                    <Switch />
+                <Form.Item label="Amount">
+                    {/* tslint:disable-next-line:prettier */}
+                    <Input onChange={(e: ChangeEvent<HTMLInputElement>): void => setAmountToAdd(+e.target.value)} />
                 </Form.Item>
                 <Form.Item label="Button">
-                    <Button htmlType="submit">Button</Button>
+                    <Button htmlType="button" onClick={onRowAdd}>
+                        Add
+                    </Button>
+                </Form.Item>
+                <Divider />
+                <Form.Item label="Button">
+                    <Button htmlType="submit">Submit</Button>
                 </Form.Item>
             </Form>
         </>

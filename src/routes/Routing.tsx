@@ -9,7 +9,7 @@ import { PageSider } from '../components/PageSider'
 import { FormInsert } from '../components/Record/FormInsert'
 import { RouteAuth } from '../auth/RouteAuth'
 
-export const Routing = () => (
+export const Routing = (): JSX.Element => (
     <HashRouter>
         <Routes>
             <Route path="/login" element={<LoginPage />} />
