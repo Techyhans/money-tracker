@@ -1,9 +1,12 @@
-name: Build and Commit Compiled Codes
+name: Test Node.js
 
 on:
   push:
     branches:
       - master
+
+  pull_request:
+    types: [synchronize, review_requested]
 
 jobs:
   build:
@@ -33,11 +36,4 @@ jobs:
 
       - name: Build Project
         run: npm run build
-
-      # Commit the compiled codes in the cloud back into the repo
-      - name: Auto-commit compiled codes
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: ":package: Updated compiled codes"
-          file_pattern: "./build/" # Only commit contents of dist folder / Similar to git add command
 

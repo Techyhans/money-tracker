@@ -1,52 +1,52 @@
 import React, { useState } from 'react'
-import { useAuthState } from 'react-firebase-hooks/auth'
 import { Form, Input, Button, Checkbox } from 'antd'
 import { useNavigate } from 'react-router-dom'
 
 import { auth, provider } from '../auth/FirebaseAuth'
 import firebase from 'firebase'
 import { Spinner } from './Spinner'
+import { LoginProps } from '../shared/model'
 
-export const Login = (): any => {
-    const [loading, setLoading] = useState(false)
-    const [isError, setIsError] = useState(false)
-    const [errorMessage, setErrorMessage] = useState('')
+export const Login = (): JSX.Element => {
+    const [loading, setLoading] = useState<boolean>(false)
+    const [isError, setIsError] = useState<boolean>(false)
+    const [errorMessage, setErrorMessage] = useState<string>('')
 
     const navigate = useNavigate()
 
-    const emailSignIn = (values: any) => {
+    const emailSignIn = (values: LoginProps): void => {
         setLoading(true)
         firebase
             .auth()
             .signInWithEmailAndPassword(values.email, values.password)
-            .then(() => {
+            .then((): void => {
                 navigate('/app/dashboard')
             })
-            .catch((e) => {
+            .catch((e): void => {
                 setLoading(false)
                 setIsError(true)
                 setErrorMessage(e.message)
             })
     }
 
-    const onFinishFailed = (errorInfo: any) => {
+    const onFinishFailed = (errorInfo: any): void => {
         console.log(errorInfo)
     }
 
-    const googleSignIn = () => {
+    const googleSignIn = (): void => {
         setLoading(true)
         auth.signInWithPopup(provider)
-            .then(() => {
+            .then((): void => {
                 navigate('/app/dashboard')
             })
             .catch(alert)
     }
 
-    const onSignUp = () => {
+    const onSignUp = (): void => {
         navigate('/signup')
     }
 
-    const onRemoveError = () => {
+    const onRemoveError = (): void => {
         setIsError(false)
     }
 
