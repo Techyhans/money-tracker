@@ -10,9 +10,10 @@ import {
     Switch,
 } from 'antd'
 import { database } from '../../auth/FirebaseAuth'
+import { JSXElementConstructor } from 'react'
 
-export const FormInsert = () => {
-    const onSubmit = (values: any) => {
+export const FormInsert = (): JSX.Element => {
+    const onSubmit = (values: any): void => {
         const ref = database.ref()
         const uniqueKey = ref.child('2').push().key
         const usersRef = ref.child(uniqueKey!)
