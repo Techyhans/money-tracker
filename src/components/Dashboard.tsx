@@ -34,16 +34,14 @@ const tableColumns = [
 ]
 
 export const Dashboard = (): JSX.Element => {
-    const dataFromServer: DataProps[] = []
     const [tableData, setTableData] = useState<TableProp[]>([])
 
     useEffect((): void => {
+        const dataFromServer: DataProps[] = []
         database.ref().on('value', (snapshot): void => {
             snapshot.forEach((item): void => {
                 dataFromServer.push(item.val())
             })
-            console.log(dataFromServer)
-
             const tempTableData: TableProp[] = []
             dataFromServer.forEach((item): void => {
                 const js = {
