@@ -1,6 +1,4 @@
 export declare type LoginProps = {
-    username: string
+    email: string
     password: string
-    remember: boolean
-    test: string
 }

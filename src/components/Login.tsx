@@ -1,20 +1,20 @@
 import React, { useState } from 'react'
-import { useAuthState } from 'react-firebase-hooks/auth'
 import { Form, Input, Button, Checkbox } from 'antd'
 import { useNavigate } from 'react-router-dom'
 
 import { auth, provider } from '../auth/FirebaseAuth'
 import firebase from 'firebase'
 import { Spinner } from './Spinner'
+import { LoginProps } from '../shared/model'
 
-export const Login = (): any => {
-    const [loading, setLoading] = useState(false)
-    const [isError, setIsError] = useState(false)
-    const [errorMessage, setErrorMessage] = useState('')
+export const Login = () => {
+    const [loading, setLoading] = useState<boolean>(false)
+    const [isError, setIsError] = useState<boolean>(false)
+    const [errorMessage, setErrorMessage] = useState<string>('')
 
     const navigate = useNavigate()
 
-    const emailSignIn = (values: any) => {
+    const emailSignIn = (values: LoginProps) => {
         setLoading(true)
         firebase
             .auth()

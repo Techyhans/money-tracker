@@ -1,11 +1,14 @@
-import React, { Component } from 'react'
+import React, { ReactElement } from 'react'
 import { auth } from './FirebaseAuth'
 import { useAuthState } from 'react-firebase-hooks/auth'
-import { LoginPage } from '../pages/LoginPage'
-import { Dashboard } from '../components/Dashboard'
-import { PageSider } from '../components/PageSider'
+import { Navigate, Route } from 'react-router-dom'
 
-export const RouteAuth = (): any => {
+type RouteProps = {
+    path: string
+    comp: ReactElement
+}
+
+export const RouteAuth = ({ path, comp }: RouteProps) => {
     const [user] = useAuthState(auth)
-    return user ? <PageSider /> : <LoginPage />
+    return user ? <Route path={path} element={comp} /> : <Navigate to={'/login'} />
 }

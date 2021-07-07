@@ -1,16 +1,18 @@
-import React, { useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import { auth } from '../auth/FirebaseAuth'
 
-export const SignUp = (): any => {
-    const [email, setemail] = useState('hanshengliang@outlook.com')
-    const [password, setpassword] = useState('Hansheng0512#')
+export const SignUp = () => {
+    const [email, setemail] = useState<string>('')
+    const [password, setpassword] = useState<string>('')
     const signup = () => {
         auth.createUserWithEmailAndPassword(email, password)
             .then((userCredential) => {
                 // send verification mail.
-                userCredential.user!.sendEmailVerification()
-                auth.signOut()
-                alert('Email sent')
+                userCredential.user!.sendEmailVerification().then(() => {
+                    auth.signOut().then(() => {
+                        alert('Email sent')
+                    })
+                })
             })
             .catch(alert)
     }
@@ -22,7 +24,7 @@ export const SignUp = (): any => {
             <input
                 type="email"
                 placeholder="Email"
-                onChange={(e) => {
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setemail(e.target.value)
                 }}
             />
@@ -31,7 +33,7 @@ export const SignUp = (): any => {
             <input
                 type="password"
                 placeholder="password"
-                onChange={(e) => {
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setpassword(e.target.value)
                 }}
             />
