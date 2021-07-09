@@ -40,7 +40,7 @@ const tableColumns = [
 ]
 
 export const Dashboard = (): JSX.Element => {
-    const [dataFromServer, setDataFromServer] = useState<DataProps[]>([])
+    const [dataFromServer] = useState<DataProps[]>([])
     const [tableData, setTableData] = useState<TableProp[]>([])
     const [selectedKey, setSelectedKey] = useState<string>('')
 
@@ -48,10 +48,6 @@ export const Dashboard = (): JSX.Element => {
 
     const showModal = (): void => {
         setIsModalVisible(true)
-    }
-
-    const handleOk = (): void => {
-        setIsModalVisible(false)
     }
 
     const handleCancel = (): void => {
@@ -62,9 +58,9 @@ export const Dashboard = (): JSX.Element => {
         database
             .ref()
             .child('orders')
-            .on('value', (snapshot): void => {
+            .get()
+            .then((snapshot): void => {
                 snapshot.forEach((item): void => {
-                    console.log(item.val())
                     dataFromServer.push(item.val())
                 })
                 const tempTableData: TableProp[] = []
@@ -78,15 +74,14 @@ export const Dashboard = (): JSX.Element => {
                 })
                 setTableData(tempTableData)
             })
-    }, [])
+    }, [dataFromServer])
 
-    const onRowClick = (record: any): any => {
+    const onRowClick = (record: any): object => {
         return {
             onClick: (): void => {
                 const selectedRow = dataFromServer.find(
                     (item): boolean => item.orderDate === record.orderDate
                 )
-                console.log('SELECTED', selectedRow)
                 setSelectedKey(selectedRow!.key)
                 showModal()
             },
@@ -94,6 +89,7 @@ export const Dashboard = (): JSX.Element => {
     }
 
     const onUpdateData = (): void => {
+        console.log(selectedKey)
         database
             .ref()
             .child('orders')
@@ -101,8 +97,11 @@ export const Dashboard = (): JSX.Element => {
             .update({
                 cleared: 1,
             })
-            .then((r): void => {
-                // handleCancel()
+            .then((): void => {
+                handleCancel()
+            })
+            .catch((e): void => {
+                console.log(e)
             })
     }
 
@@ -112,11 +111,11 @@ export const Dashboard = (): JSX.Element => {
             .child('orders')
             .child(selectedKey)
             .remove()
-            .then((r): void => {
+            .then((): void => {
                 setTableData(
                     tableData.filter((item: TableProp): any => item.uniqueKey !== selectedKey)
                 )
-                // setIsModalVisible(false)
+                handleCancel()
             })
     }
 
@@ -130,10 +129,20 @@ export const Dashboard = (): JSX.Element => {
                     <Button key="back" onClick={handleCancel}>
                         Close
                     </Button>,
-                    <Button key="submit" type="primary" loading={false} onClick={onUpdateData}>
+                    <Button
+                        key="submit"
+                        type="primary"
+                        loading={false}
+                        onClick={(): void => onUpdateData()}
+                    >
                         Mask as Completed
                     </Button>,
-                    <Button key="submit" type="primary" loading={false} onClick={onDeleteData}>
+                    <Button
+                        key="submit"
+                        type="primary"
+                        loading={false}
+                        onClick={(): void => onDeleteData()}
+                    >
                         Delete
                     </Button>,
                 ]}

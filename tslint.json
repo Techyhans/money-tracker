@@ -12,7 +12,6 @@
     "interface-name": false,
     "no-console": false,
     "jsx-no-lambda": false,
-    "typedef": [true, "arrow-call-signature"],
-    "react-hooks/exhaustive-deps": "warn" // Checks effect dependencies
+    "typedef": [true, "arrow-call-signature"]
   }
 }
