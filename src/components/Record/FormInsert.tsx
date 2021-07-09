@@ -27,6 +27,10 @@ export const FormInsert = (): JSX.Element => {
     const [showAlert, setShowAlert] = useState<boolean>(false)
 
     const onSubmit = (values: any): void => {
+        // Init Firebase
+        const ref = database.ref()
+        const uniqueKey = ref.child('orders').push().key
+
         // Form Data To Submit
         const dataToSubmit = {
             payBy: values.payBy,
@@ -39,13 +43,12 @@ export const FormInsert = (): JSX.Element => {
             taxTotal: +values.taxTotal,
             cleared: 0,
             details: {},
+            key: uniqueKey!,
         }
         dataToSubmit.details = data
 
         // Submit to firebase
-        const ref = database.ref()
-        const uniqueKey = ref.child('orders').push().key
-        const usersRef = ref.child(uniqueKey!)
+        const usersRef = ref.child('orders').child(uniqueKey!)
         usersRef.set(dataToSubmit).then((): void => {
             setShowAlert(true)
         })
@@ -54,7 +57,6 @@ export const FormInsert = (): JSX.Element => {
     const onRowClick = (record: any): any => {
         return {
             onClick: (): void => {
-                console.log(record)
                 setData(data.filter((item: DataType): any => item.key !== record.key))
             },
         }
